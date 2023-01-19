@@ -243,6 +243,20 @@ button {
   cursor: pointer;
 }
 
+.signUpInsteadBar{
+  margin-top: 6rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.signUpLink {
+  color: #00cc66;
+  font-weight: 600;
+  text-align: center;
+
+}
+
 @media (min-width: 1024px) {
 
   .signInBar,

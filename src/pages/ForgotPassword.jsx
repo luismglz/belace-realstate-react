@@ -1,7 +1,7 @@
 function ForgotPassword() {
   return (
     <>
-      <h1>ForgotPassword</h1>
+      <h1>Forgot Password</h1>
     </>
   )
 }
