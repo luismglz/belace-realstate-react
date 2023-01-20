@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
+import {toast} from 'react-toastify'
 import {getAuth, createUserWithEmailAndPassword, updateProfile} from  'firebase/auth';
 import {setDoc, doc, serverTimestamp} from 'firebase/firestore'
 import {db} from '../firebase.config';
@@ -56,7 +57,8 @@ function SignUp() {
 
 
     } catch (error) {
-      console.error(error)
+      toast.error(error.message)
+      console.log(error.message)
     }
   }
 
