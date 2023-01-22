@@ -39,8 +39,6 @@ function SignIn() {
       }
     } catch (error) {
       toast.error(error.message)
-      console.log(error.code)
-      console.log(error)
     }
    }
 
