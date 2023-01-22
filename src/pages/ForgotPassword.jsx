@@ -17,10 +17,9 @@ function ForgotPassword() {
       await sendPasswordResetEmail(auth, email);
       toast.success('Reset password link was sent')
       setEmail('')
-      
+
     } catch (error) {
       toast.error(error.message)
-      console.log(error);
     }
 
   }
@@ -40,17 +39,17 @@ function ForgotPassword() {
             id="email"
             value={email}
             onChange={onChange} />
-            <Link className="forgotPasswordLink" to='/sign-in'>
-              Sign In
-            </Link>
-            <div className="signInBar">
-              <div className="signInText">
-                Send Reset Link
-              </div>
-              <button className="signInButton">
-                <ArrowRightIcon fill='#ffffff' width="34px" height="34px"/>
-              </button>
+          <Link className="forgotPasswordLink" to='/sign-in'>
+            Sign In
+          </Link>
+          <div className="signInBar">
+            <div className="signInText">
+              Send Reset Link
             </div>
+            <button className="signInButton">
+              <ArrowRightIcon fill='#ffffff' width="34px" height="34px" />
+            </button>
+          </div>
         </form>
       </main>
     </div>

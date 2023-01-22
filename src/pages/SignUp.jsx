@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
+import OAuth from "../components/OAuth"
 import {toast} from 'react-toastify'
 import {getAuth, createUserWithEmailAndPassword, updateProfile} from  'firebase/auth';
 import {setDoc, doc, serverTimestamp} from 'firebase/firestore'
@@ -49,7 +50,6 @@ function SignUp() {
 
 
       await setDoc(doc(db, 'users', user.uid), formDataCopy)
-      console.log(formDataCopy)
 
 
 
@@ -58,7 +58,6 @@ function SignUp() {
 
     } catch (error) {
       toast.error(error.message)
-      console.log(error.message)
     }
   }
 
@@ -118,6 +117,7 @@ function SignUp() {
             </div>
           </div>
         </form>
+        <OAuth/>
         <div className="signUpInsteadBar">
           <p>Already have an account?&nbsp;</p>
           <Link
