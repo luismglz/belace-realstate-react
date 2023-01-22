@@ -34,7 +34,6 @@ function SignIn() {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
       if (userCredential.user) {
-        console.log(userCredential);
         navigate('/')
       }
     } catch (error) {
