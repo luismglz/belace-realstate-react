@@ -16,6 +16,7 @@ function ListingItem({ listing, id, onDelete }) {
     imgUrls,
     isOffer,
     location,
+    address,
     name,
     parking,
     publishedAt,
