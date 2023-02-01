@@ -3,6 +3,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { db } from '../firebase.config'
+import {addDoc, collection, serverTimestamp} from 'firebase/firestore'
 import { v4 as uuid } from 'uuid'
 import { toast } from 'react-toastify'
 import Spinner from "../components/Spinner";
@@ -53,13 +54,11 @@ function CreateListing() {
     isOffer: false,
     regularPrice: 0,
     discountedPrice: 0,
-    images: {},
-    latitude: 0,
-    longitude: 0,
+    images: {}
   });
 
 
-  const {
+  let {
     type,
     name,
     bedrooms,
@@ -72,9 +71,7 @@ function CreateListing() {
     isOffer,
     regularPrice,
     discountedPrice,
-    images,
-    latitude,
-    longitude
+    images
   } = formData;
 
   const auth = getAuth();
@@ -83,6 +80,8 @@ function CreateListing() {
   const isMounted = useRef(true)
 
   useEffect(() => {
+    console.log(formData);
+    
 
     //if user is logged in set userRef in obj
     if (isMounted) {
@@ -118,7 +117,7 @@ function CreateListing() {
     }
 
     let geolocation = {}
-    let location
+
     let key = import.meta.env.VITE_GEOCODE_API_KEY
 
     if (geolocationEnabled) {
@@ -129,9 +128,22 @@ function CreateListing() {
       geolocation.lat = data.results[0]?.geometry.location.lat ?? 0;
       geolocation.lng = data.results[0]?.geometry.location.lng ?? 0;
 
-      location = data.status === 'ZERO_RESULTS'
+
+      address = data.status === 'ZERO_RESULTS'
         ? undefined
         : data.results[0]?.formatted_address;
+
+      location = data.status === 'ZERO_RESULTS'
+        ? undefined
+        : `${data.results[0]?.address_components[3].long_name}`;
+
+      country = data.status === 'ZERO_RESULTS'
+        ? undefined
+        : `${data.results[0].address_components[data.results[0].address_components.length - 2].long_name}`;
+
+      // console.log(data.results[0]);
+      // console.log(data.results[0].address_components.length)
+      // console.log(data.results[0].address_components[data.results[0].address_components.length - 2].long_name)
 
 
       if (location === undefined || location.includes('undefined')) {
@@ -142,6 +154,7 @@ function CreateListing() {
 
     } else {
       //taken from lat and lng inputs
+      location = address;
       geolocation.lat = latitude;
       geolocation.lng = longitude;
     }
@@ -173,14 +186,14 @@ function CreateListing() {
           },
           (error) => {
             reject(error)
-            toast.error('Sorry, the listing couldn\'t be created. Try Again')
+           // toast.error('Sorry, the listing couldn\'t be created. Try Again')
           },
           () => {
             // Handle successful uploads on complete
             // For instance, get the download URL: https://firebasestorage.googleapis.com/...
             getDownloadURL(uploadTask.snapshot.ref)
             .then((downloadURL) => {
-              console.log(resolve(downloadURL));
+              resolve(downloadURL);
               
             });
           }
@@ -197,7 +210,29 @@ function CreateListing() {
       return;
     })
 
-    console.log(imgUrls)
+    //prepare new listing data before insert in firestore
+    const listingData = {
+      ...formData,
+      imgUrls,
+      geolocation,
+      publishedAt: serverTimestamp()
+    }
+
+    delete listingData.images;
+    delete listingData.images;
+    location && (listingData.location = location);
+    !listingData.isOffer && delete listingData.discountedPrice;
+
+    const docRef = await addDoc(collection(db, 'listings'),listingData);
+
+    setLoading(false);
+
+    toast.success('The listing was successfully created');
+
+    navigate(`/category/${listingData.type}/${docRef.id}`)
+
+
+
 
     setLoading(false)
 
@@ -358,12 +393,17 @@ function CreateListing() {
             onChange={onMutate}
             required
           />
-          <label htmlFor="" className="formLabel">Country</label>
-          <select onChange={onMutate} id="country" className="formInputSelect" value={country}>
-            {countries.map((value, index) =>
-              (<option key={index + value} value={value}>{value}</option>)
-            )}
-          </select>
+          {!geolocationEnabled && (
+            <>
+              <label htmlFor="" className="formLabel">Country</label>
+              <select onChange={onMutate} id="country" className="formInputSelect" value={country}>
+                {countries.map((value, index) =>
+                  (<option key={index + value} value={value}>{value}</option>)
+                )}
+              </select>
+            </>
+          )
+          }
           {!geolocationEnabled && (
             <div className="formLatLng flex">
               <div>
