@@ -37,7 +37,7 @@ function CreateListing() {
     "United States"
   ]
 
-  const [geolocationEnabled, setGeolocationEnabled] = useState(true);
+  const [geolocationEnabled, setGeolocationEnabled] = useState(false);
 
   const [loading, setLoading] = useState(false);
 
@@ -54,7 +54,9 @@ function CreateListing() {
     isOffer: false,
     regularPrice: 0,
     discountedPrice: 0,
-    images: {}
+    images: {},
+    latitude: 0,
+    longitude: 0
   });
 
 
@@ -71,7 +73,9 @@ function CreateListing() {
     isOffer,
     regularPrice,
     discountedPrice,
-    images
+    images,
+    latitude,
+    longitude
   } = formData;
 
   const auth = getAuth();
@@ -80,8 +84,6 @@ function CreateListing() {
   const isMounted = useRef(true)
 
   useEffect(() => {
-    console.log(formData);
-    
 
     //if user is logged in set userRef in obj
     if (isMounted) {
@@ -141,10 +143,6 @@ function CreateListing() {
         ? undefined
         : `${data.results[0].address_components[data.results[0].address_components.length - 2].long_name}`;
 
-      // console.log(data.results[0]);
-      // console.log(data.results[0].address_components.length)
-      // console.log(data.results[0].address_components[data.results[0].address_components.length - 2].long_name)
-
 
       if (location === undefined || location.includes('undefined')) {
         setLoading(false);
@@ -152,9 +150,8 @@ function CreateListing() {
         return;
       }
 
-    } else {
+    }else {
       //taken from lat and lng inputs
-      location = address;
       geolocation.lat = latitude;
       geolocation.lng = longitude;
     }
@@ -186,16 +183,16 @@ function CreateListing() {
           },
           (error) => {
             reject(error)
-           // toast.error('Sorry, the listing couldn\'t be created. Try Again')
+            // toast.error('Sorry, the listing couldn\'t be created. Try Again')
           },
           () => {
             // Handle successful uploads on complete
             // For instance, get the download URL: https://firebasestorage.googleapis.com/...
             getDownloadURL(uploadTask.snapshot.ref)
-            .then((downloadURL) => {
-              resolve(downloadURL);
-              
-            });
+              .then((downloadURL) => {
+                resolve(downloadURL);
+
+              });
           }
         );
 
@@ -219,11 +216,13 @@ function CreateListing() {
     }
 
     delete listingData.images;
-    delete listingData.images;
+    delete listingData.latitude;
+    delete listingData.longitude;
+    country && (listingData.country = country)
     location && (listingData.location = location);
     !listingData.isOffer && delete listingData.discountedPrice;
 
-    const docRef = await addDoc(collection(db, 'listings'),listingData);
+    const docRef = await addDoc(collection(db, 'listings'), listingData);
 
     setLoading(false);
 
@@ -235,7 +234,7 @@ function CreateListing() {
 
 
     setLoading(false)
-
+ 
 
   }
 
@@ -401,6 +400,22 @@ function CreateListing() {
                   (<option key={index + value} value={value}>{value}</option>)
                 )}
               </select>
+            </>
+          )
+          }
+          {!geolocationEnabled && (
+            <>
+              <label htmlFor="" className="formLabel">City</label>
+              <input
+                className="formInputName"
+                type="text"
+                id="location"
+                value={location}
+                onChange={onMutate}
+                maxLength='32'
+                minLength='2'
+                required
+              />
             </>
           )
           }
