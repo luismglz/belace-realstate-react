@@ -24,6 +24,8 @@ function Listing() {
       const documentReference = doc(db, 'listings', params.listingId)
       const documentSnapshot = await getDoc(documentReference)
 
+
+
       if (documentSnapshot.exists()) {
         setListing(documentSnapshot.data())
         setLoading(false)
@@ -88,7 +90,7 @@ function Listing() {
 
         {auth.currentUser?.uid !== listing.userRef && (
           <Link 
-          to={`/contact/${listing.userRef}?name=${listing.name}&location=${listing.address}`} className='primaryButton'>Contact Landlord</Link>
+          to={`/contact/${listing.userRef}?name=${listing.name}`} className='primaryButton'>Contact Landlord</Link>
         )}
       </div>
     </main>
