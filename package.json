@@ -10,10 +10,13 @@
   },
   "dependencies": {
     "firebase": "^9.15.0",
+    "leaflet": "^1.9.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-leaflet": "^4.2.0",
     "react-router-dom": "^6.7.0",
     "react-toastify": "^9.1.1",
+    "swiper": "^6.8.1",
     "uuid": "^9.0.0",
     "vite-plugin-svgr": "^2.4.0"
   },
