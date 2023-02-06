@@ -86,7 +86,7 @@ function Listing() {
         <p className="listingType">For {listing.type === 'rent' ? 'Rent' : 'Sale'}</p>
         {listing.isOffer && (
           <p className="discountPrice">
-            ${listing.regularPrice - listing.discountedPrice} discount
+            ${listing.regularPrice - listing.discountedPrice} with discount
           </p>
         )}
 
