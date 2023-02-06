@@ -41,8 +41,8 @@ function ListingItem({ listing, id, onDelete }) {
           <p className="categoryListingName">{name}</p>
           <p className="categoryListingPrice">
             ${isOffer
-              ? discountedPrice.toString().replace(/\B(?=(\d{3})+(?!d))/g, ',')
-              : regularPrice.toString().replace(/\B(?=(\d{3})+(?!d))/g, ',')
+              ? discountedPrice?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+              : regularPrice?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
             }
             {
               type === 'rent' && ' / Month'

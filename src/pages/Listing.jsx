@@ -79,8 +79,8 @@ function Listing() {
       <div className="listingDetails">
         <p className="listingName">
           {listing.name} - ${Listing.isOffer
-            ? listing.discountedPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-            : listing.regularPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+            ? listing?.discountedPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+            : listing?.regularPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
         </p>
         <p className="listingLocation">{`${listing.location}, ${listing.country}`}</p>
         <p className="listingType">For {listing.type === 'rent' ? 'Rent' : 'Sale'}</p>

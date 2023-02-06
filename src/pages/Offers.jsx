@@ -18,6 +18,7 @@ function Offers() {
 
   const [listings, setListings] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [lastFetchedListing, setLastFetchedListing] = useState(null)
 
   const params = useParams()
 
@@ -34,6 +35,9 @@ function Offers() {
         );
 
         const querySnapshot = await getDocs(listingsQuery);
+
+        const lastVisibleDocument = querySnapshot.docs[querySnapshot.docs.length - 1];
+        setLastFetchedListing(lastVisibleDocument);
 
         const listingsData = []
 
@@ -53,6 +57,41 @@ function Offers() {
 
     fetchListings()
   }, [])
+
+
+  //Pagination / Load More
+  const onFetchMoreListings = async () => {
+    try {
+      const listingsReference = collection(db, 'listings');
+
+      const listingsQuery = query(
+        listingsReference,
+        where('isOffer', '==', true),
+        orderBy('publishedAt', 'desc'),
+        startAfter(lastFetchedListing),
+        limit(10)
+      );
+
+      const querySnapshot = await getDocs(listingsQuery);
+
+      const lastVisibleDocument = querySnapshot.docs[querySnapshot.docs.length - 1];
+      setLastFetchedListing(lastVisibleDocument);
+
+      const listingsData = []
+
+      querySnapshot.forEach((document) => {
+        return listingsData.push({
+          id: document.id,
+          data: document.data(),
+        })
+      })
+
+      setListings((prevState) => [...prevState, ...listings]);
+      setLoading(false)
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
 
   return (
     <div className="category">
@@ -74,6 +113,15 @@ function Offers() {
                 ))}
               </ul>
             </main>
+            <br />
+            <br />
+            {
+              lastFetchedListing && (
+                <p className="loadMore" onClick={() => {
+                  lastFetchedListing !== null ? onFetchMoreListings : toast.success('d')
+                }}>Load More</p>
+              )
+            }
           </>
           : <p>There are no current offers</p>
       }
