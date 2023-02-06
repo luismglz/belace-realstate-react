@@ -124,7 +124,7 @@ function Category() {
             <br />
             <br />
             {
-              lastFetchedListing && (
+              (lastFetchedListing && listings.length > 10) && (
                 <p className="loadMore" onClick={() => {
                   lastFetchedListing !== null ? onFetchMoreListings : toast.success('d')
                 }}>Load More</p>
