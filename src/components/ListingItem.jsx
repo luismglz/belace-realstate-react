@@ -79,7 +79,7 @@ function ListingItem({ listing, id, onDelete, onEdit }) {
       {onEdit && (
         <EditIcon
           className='editIcon'
-          fill="rgb(0, 204, 102)"
+          fill="rgb(0, 0, 0)"
           onClick={() => onEdit(id)}
         />
       )}
