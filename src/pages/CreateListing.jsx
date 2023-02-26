@@ -17,7 +17,7 @@ function CreateListing() {
     "China",
     "Czech Republic",
     "Germany",
-    "Hong Kong",
+    "Hong Kong SAR",
     "India",
     "Indonesia",
     "Iran",
@@ -309,7 +309,7 @@ function CreateListing() {
             id="name"
             value={name}
             onChange={onMutate}
-            maxLength='32'
+            maxLength='45'
             minLength='10'
             required
           />
